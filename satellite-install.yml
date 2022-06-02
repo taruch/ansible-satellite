@@ -21,16 +21,17 @@
   collections:
   - ansible.posix
   - redhat.satellite_operations
-  - redhat.satellite
   - community.general
   vars:
+    - admin_user: admin
+    - admin_pass: changeme
     - satellite_installer_scenario: satellite
     - satellite_installer_options:
       - "--foreman-initial-admin-username {{ admin_user }}"
       - "--foreman-initial-admin-password {{ admin_pass}}"
 
-  - roles:
-    - redhat.satellite_operations.installer
+  roles:
+  - redhat.satellite_operations.installer
 
 
 - name: Install Satellite Part 2
@@ -45,8 +46,8 @@
       - '--foreman-proxy-bmc "true"'
       - '--foreman-proxy-bmc-default-provider "freeipmi"'
 
-  - roles:
-    - redhat.satellite_operations.installer
+  roles:
+  - redhat.satellite_operations.installer
 
 
 
@@ -77,8 +78,8 @@
       - '--foreman-proxy-tftp-managed true'
       - "--foreman-proxy-tftp-servername {{ Satellite_Server }}"
 
-  - roles:
-    - redhat.satellite_operations.installer
+  roles:
+  - redhat.satellite_operations.installer
 
 
 - name: Install Satellite Part 4
@@ -93,5 +94,5 @@
       - "--foreman-proxy-httpboot true"
       - "--foreman-proxy-http true"
 
-  - roles:
-    - redhat.satellite_operations.installer
+  roles:
+  - redhat.satellite_operations.installer
