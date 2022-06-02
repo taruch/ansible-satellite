@@ -1,0 +1,57 @@
+---
+
+- name: Install Satellite
+  hosts: localhost
+  collections:
+  - redhat.satellite_operations
+  - community.general
+  vars:
+    - admin_user: admin
+    - admin_pass: changeme
+    - satellite_installer_scenario: satellite
+    - configure_provisioning: true
+    - dns_forwarder: '8.8.8.8'
+    - dns_proxy_server: '127.0.0.1'
+    - dns_reverse_zone: '122.168.192.in-addr.arpa'
+    - dhcp_range: '"192.168.122.105 192.168.122.200"'
+    - dhcp_gateway: 192.168.122.1
+    - satellite_server: 192.168.122.239
+    - foreman_admin_username: "--foreman-initial-admin-username {{ admin_user }}"
+    - foreman_admin_pass: "--foreman-initial-admin-password {{ admin_pass }}"
+    - foreman_proxy_dns_forwarders: "--foreman-proxy-dns-forwarders {{ dns_forwarder }}"
+    - foreman_proxy_dns_reverse: "--foreman-proxy-dns-reverse {{ dns_reverse_zone }}"
+    - foreman_proxy_dhcp_range: "--foreman-proxy-dhcp-range {{ dhcp_range }}"
+    - foreman_proxy_dhcp_gateway: "--foreman-proxy-dhcp-gateway {{ dhcp_gateway }}"
+    - foreman_proxy_dhcp_nameservers: "--foreman-proxy-dhcp-nameservers {{ satellite_server }}"
+    - foreman_proxy_tftp_servername: "--foreman-proxy-tftp-servername {{ satellite_server }}"
+
+  tasks:
+    - name: Run the installer for provisioning
+      include_role:
+        name: redhat.satellite_operations.installer
+      vars:
+        satellite_installer_scenario: satellite
+        satellite_installer_options:
+        - "{{ foreman_admin_username }}"
+        - "{{ foreman_admin_pass }}"
+        - '--foreman-proxy-dns true'
+        - '--foreman-proxy-dns-managed true'
+        - "{{ foreman_proxy_dns_forwarders }}"
+        - '--foreman-proxy-dns-interface eth0'
+        - '--foreman-proxy-dns-zone local'
+        - '--foreman-proxy-dns-server 127.0.0.1'
+        - "{{ foreman_proxy_dns_reverse }}"
+        - '--foreman-proxy-dhcp true'
+        - '--foreman-proxy-dhcp-managed true'
+        - '--foreman-proxy-dhcp-interface eth0'
+        - "{{ foreman_proxy_dhcp_range }}"
+        - "{{ foreman_proxy_dhcp_gateway }}"
+        - "{{ foreman_proxy_dhcp_nameservers }}"
+        - '--foreman-proxy-tftp true'
+        - '--foreman-proxy-tftp-managed true'
+        - "{{ foreman_proxy_tftp_servername }}"
+        - "--foreman-proxy-http true"
+        - "--foreman-proxy-httpboot true"
+        - "--foreman-proxy-bmc 'true'"
+        - "--foreman-proxy-bmc-default-provider 'freeipmi'"
+      when: "configure_provisioning == true"
