@@ -1,0 +1,97 @@
+---
+
+#- name: Install Satellite
+#  hosts: satellite-servers
+#  roles:
+#    #- role: satellite
+#    #  satellite_admin_username: my_user
+#    #  satellite_admin_password: my_derpy_p4ssw0rd
+#    #  satellite_organization: Lexcorp, Inc.
+#    #  satellite_location: Metropolis, USA
+#    - role: redhat.satellite_operations.installer
+#      vars:
+#        satellite_installer_scenario: satellite
+#        satellite_installer_options:
+#          - '--foreman-initial-organization "ACME Inc"'
+#          - '--foreman-initial-admin-password changeme'
+
+
+- name: Install Satellite Part 1
+  hosts: localhost
+  collections:
+  - ansible.posix
+  - redhat.satellite_operations
+  - redhat.satellite
+  - community.general
+  vars:
+    - satellite_installer_scenario: satellite
+    - satellite_installer_options:
+      - "--foreman-initial-admin-username {{ admin_user }}"
+      - "--foreman-initial-admin-password {{ admin_pass}}"
+
+  - roles:
+    - redhat.satellite_operations.installer
+
+
+- name: Install Satellite Part 2
+  hosts: localhost
+  collections:
+  - ansible.posix
+  - redhat.satellite_operations
+  - community.general
+  vars:
+    - satellite_installer_scenario: satellite
+    - satellite_installer_options:
+      - '--foreman-proxy-bmc "true"'
+      - '--foreman-proxy-bmc-default-provider "freeipmi"'
+
+  - roles:
+    - redhat.satellite_operations.installer
+
+
+
+- name: Install Satellite Part 3
+  hosts: localhost
+  collections:
+  - ansible.posix
+  - redhat.satellite_operations
+  - community.general
+  vars:
+    - Satellite_Server: "{{ ansible_facts.facter_networking.interfaces.eth0.ip }}"
+    - satellite_installer_scenario: satellite
+    - satellite_installer_options:
+      - '--foreman-proxy-dns true'
+      - '--foreman-proxy-dns-managed true'
+      - '--foreman-proxy-dns-forwarders "8.8.8.8"'
+      - '--foreman-proxy-dns-interface eth0'
+      - '--foreman-proxy-dns-zone local'
+      - '--foreman-proxy-dns-server "127.0.0.1"'
+      - '--foreman-proxy-dns-reverse 100.168.192.in-addr.arpa'
+      - '--foreman-proxy-dhcp true'
+      - '--foreman-proxy-dhcp-managed true'
+      - '--foreman-proxy-dhcp-interface eth0'
+      - '--foreman-proxy-dhcp-range "192.168.100.105 192.168.100.200"'
+      - '--foreman-proxy-dhcp-gateway 192.168.100.1'
+      - "--foreman-proxy-dhcp-nameservers {{ Satellite_Server }}"
+      - '--foreman-proxy-tftp true'
+      - '--foreman-proxy-tftp-managed true'
+      - "--foreman-proxy-tftp-servername {{ Satellite_Server }}"
+
+  - roles:
+    - redhat.satellite_operations.installer
+
+
+- name: Install Satellite Part 4
+  hosts: localhost
+  collections:
+  - ansible.posix
+  - redhat.satellite_operations
+  - community.general
+  vars:
+    - satellite_installer_scenario: satellite
+    - satellite_installer_options:
+      - "--foreman-proxy-httpboot true"
+      - "--foreman-proxy-http true"
+
+  - roles:
+    - redhat.satellite_operations.installer

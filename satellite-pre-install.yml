@@ -1,0 +1,154 @@
+- name: Install Satellite
+  hosts: satellite-servers
+  roles:
+    #- role: satellite
+    #  satellite_admin_username: my_user
+    #  satellite_admin_password: my_derpy_p4ssw0rd
+    #  satellite_organization: Lexcorp, Inc.
+    #  satellite_location: Metropolis, USA
+    - role: redhat.satellite_operations.installer
+      vars:
+        satellite_installer_scenario: satellite
+        satellite_installer_options:
+          - '--foreman-initial-organization "ACME Inc"'
+          - '--foreman-initial-admin-password changeme'
+
+
+- name: Install Satellite
+  hosts: localhost
+  collections:
+  - ansible.posix
+  - redhat.satellite_operations
+  - redhat.satellite
+  - community.general
+  vars:
+    - Satellite_Server: "{{ ansible_facts.facter_networking.interfaces.eth0.ip }}"
+    - satellite_installer_scenario: satellite
+    - satellite_installer_options:
+      - '--foreman-initial-admin-password changeme'
+      - '--foreman-initial-admin-password changeme'
+      - '--foreman-proxy-bmc "true"'
+      - '--foreman-proxy-bmc-default-provider "freeipmi"'
+      - '--foreman-proxy-dns true'
+      - '--foreman-proxy-dns-managed true'
+      - '--foreman-proxy-dns-forwarders "8.8.8.8"'
+      - '--foreman-proxy-dns-interface eth0'
+      - '--foreman-proxy-dns-zone local'
+      - '--foreman-proxy-dns-server "127.0.0.1"'
+      - '--foreman-proxy-dns-reverse 100.168.192.in-addr.arpa'
+      - '--foreman-proxy-dhcp true'
+      - '--foreman-proxy-dhcp-managed true'
+      - '--foreman-proxy-dhcp-interface eth0'
+      - '--foreman-proxy-dhcp-range "192.168.100.105 192.168.100.200"'
+      - '--foreman-proxy-dhcp-gateway 192.168.100.1'
+      - "--foreman-proxy-dhcp-nameservers {{ Satellite_Server }}"
+      - '--foreman-proxy-tftp true'
+      - '--foreman-proxy-tftp-managed true'
+      - "--foreman-proxy-tftp-servername {{ Satellite_Server }}"
+      - '--foreman-proxy-httpboot true'
+      - '--foreman-proxy-http true'
+
+
+  tasks:
+  - name: Disable all RHSM repositories
+    rhsm_repository:
+      name: '*'
+      state: disabled
+
+  - name: Enable a RHSM repository
+    rhsm_repository:
+      name: 
+        - rhel-7-server-rpms
+        - rhel-7-server-satellite-6.9-rpms
+        - rhel-7-server-satellite-maintenance-6-rpms 
+        - rhel-server-rhscl-7-rpms 
+        - rhel-7-server-ansible-2.9-rpms
+      state: enabled
+
+  - name: Install Satellite RPMs
+    ansible.builtin.yum:
+      name:
+        - satellite
+      state: latest
+
+
+  - name: Allow port 80/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 80/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 443/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 443/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 8000/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 8000/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 9090/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 9090/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 5000/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 5000/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 5647/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 5647/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 8140/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 8140/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 53/tcp
+    ansible.posix.firewalld:
+      zone: public
+      port: 53/tcp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 53/udp
+    ansible.posix.firewalld:
+      zone: public
+      port: 53/udp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 67/udp
+    ansible.posix.firewalld:
+      zone: public
+      port: 67/udp
+      permanent: yes
+      state: enabled
+
+  - name: Allow port 69/udp
+    ansible.posix.firewalld:
+      zone: public
+      port: 69/udp
+      permanent: yes
+      state: enabled
+
+  - name: Import Satellite Installer Role
+    ansible.builtin.import_role:
+      name: redhat.satellite_operations.installer
