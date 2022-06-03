@@ -4,6 +4,7 @@
   hosts: localhost
   collections:
   - redhat.satellite_operations
+  - redhat.satellite
   - community.general
   vars:
     - admin_user: admin
@@ -16,6 +17,8 @@
     - dhcp_range: '"192.168.122.105 192.168.122.200"'
     - dhcp_gateway: 192.168.122.1
     - satellite_server: 192.168.122.239
+    - server_url: "https://satellite.example.com"
+    - organization: "Default Organization"
     - foreman_admin_username: "--foreman-initial-admin-username {{ admin_user }}"
     - foreman_admin_pass: "--foreman-initial-admin-password {{ admin_pass }}"
     - foreman_proxy_dns_forwarders: "--foreman-proxy-dns-forwarders {{ dns_forwarder }}"
@@ -54,4 +57,22 @@
         - "--foreman-proxy-httpboot true"
         - "--foreman-proxy-bmc 'true'"
         - "--foreman-proxy-bmc-default-provider 'freeipmi'"
+        organization: "{{ organization }}"
       when: "configure_provisioning == true"
+
+
+    - name: "Upload the RHEL manifest"
+      redhat.satellite.subscription_manifest:
+        username: "admin"
+        password: "changeme"
+        server_url: "{{ server_url }}"
+        organization: "{{ organization }}"
+        state: present
+        manifest_path: "/tmp/manifest.zip"
+      ignore_errors: yes
+
+
+    - name: "Refresh manifest"
+      ansible.builtin.command: hammer subscription refresh-manifest --organization "Default Organization"
+
+      
