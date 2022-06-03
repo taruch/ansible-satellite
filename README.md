@@ -1,6 +1,7 @@
 # ansible-satellite
 These example playbooks are intended to be run in order from a working
-RHEL 7.9 system.  They should result in a working Satellite 6.9 server with
+RHEL 7.9 system.  The playbooks utilize the redhat.satellite_operations and
+redhat.satellite collections to inialize a working Satellite 6.9 server with
 content on the system.
 
 It requires access to the internet or another Satellite system for packages
