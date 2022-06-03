@@ -7,10 +7,10 @@
   - redhat.satellite
   - community.general
   vars:
+    - configure_provisioning: true
     - admin_user: admin
     - admin_pass: changeme
     - satellite_installer_scenario: satellite
-    - configure_provisioning: true
     - dns_forwarder: '8.8.8.8'
     - dns_proxy_server: '127.0.0.1'
     - dns_reverse_zone: '122.168.192.in-addr.arpa'
@@ -73,6 +73,6 @@
 
 
     - name: "Refresh manifest"
-      ansible.builtin.command: hammer subscription refresh-manifest --organization "Default Organization"
+      ansible.builtin.command: hammer subscription refresh-manifest --organization "{{ organization }}"
 
       
