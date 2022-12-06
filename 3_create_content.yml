@@ -2,7 +2,7 @@
 
 - name: Import and Create Content - Red Hat Enterprise Linux 7 Server
   gather_facts: no
-  hosts: localhost
+  hosts: satellite_servers
   vars:
     content_view: RHEL
     product: "Red Hat Enterprise Linux Server"
@@ -13,13 +13,13 @@
     organization: "Default Organization"
     admin_acct: admin
     admin_pass: changeme
-    server_url: "https://satellite.example.com"
+    server_url: "https://satellite.local"
   tasks:
     - name: "Enable RHEL 7 RPMs repositories"
       redhat.satellite.repository_set:
         username: "admin"
         password: "changeme"
-        server_url: "https://satellite.example.com"
+        server_url: "https://satellite.local"
         name: "Red Hat Enterprise Linux 7 Server (RPMs)"
         organization: "Default Organization"
         product: "Red Hat Enterprise Linux Server"

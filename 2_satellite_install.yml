@@ -1,35 +1,40 @@
 ---
 
 - name: Install Satellite
-  hosts: localhost
+  hosts: satellite_servers
+  remote_user: root
   collections:
   - redhat.satellite_operations
   - redhat.satellite
   - community.general
+  ignore_errors: true
   vars:
     - configure_provisioning: true
     - admin_user: admin
     - admin_pass: changeme
     - satellite_installer_scenario: satellite
+    - proxy_interface: 'eth0'
     - dns_forwarder: '8.8.8.8'
     - dns_proxy_server: '127.0.0.1'
-    - dns_reverse_zone: '122.168.192.in-addr.arpa'
-    - dhcp_range: '"192.168.122.105 192.168.122.200"'
+    - dns_reverse_zone: '100.168.192.in-addr.arpa'
+    - dhcp_range: '"192.168.100.160 192.168.122.200"'
     - dhcp_gateway: 192.168.122.1
-    - satellite_server: 192.168.122.239
-    - server_url: "https://satellite.example.com"
+    - satellite_server: 192.168.100.100
+    - server_url: "https://satellite.local"
     - organization: "Default Organization"
     - foreman_admin_username: "--foreman-initial-admin-username {{ admin_user }}"
     - foreman_admin_pass: "--foreman-initial-admin-password {{ admin_pass }}"
+    - foreman_proxy_dns_interface: "--foreman-proxy-dns-interface {{ proxy_interface }}"
     - foreman_proxy_dns_forwarders: "--foreman-proxy-dns-forwarders {{ dns_forwarder }}"
     - foreman_proxy_dns_reverse: "--foreman-proxy-dns-reverse {{ dns_reverse_zone }}"
     - foreman_proxy_dhcp_range: "--foreman-proxy-dhcp-range {{ dhcp_range }}"
     - foreman_proxy_dhcp_gateway: "--foreman-proxy-dhcp-gateway {{ dhcp_gateway }}"
+    - foreman_proxy_dhcp_interface: "--foreman-proxy-dhcp-gateway {{ proxy_interface }}"
     - foreman_proxy_dhcp_nameservers: "--foreman-proxy-dhcp-nameservers {{ satellite_server }}"
     - foreman_proxy_tftp_servername: "--foreman-proxy-tftp-servername {{ satellite_server }}"
 
   tasks:
-    - name: Run the installer for provisioning
+    - name: Run the installer for provisioning - set admin password
       include_role:
         name: redhat.satellite_operations.installer
       vars:
@@ -37,29 +42,59 @@
         satellite_installer_options:
         - "{{ foreman_admin_username }}"
         - "{{ foreman_admin_pass }}"
+        organization: "{{ organization }}"
+      when: "configure_provisioning == true"
+      ignore_errors: true
+
+    - name: Run the installer for provisioning - BMC Proxy
+      include_role:
+        name: redhat.satellite_operations.installer
+      vars:
+        satellite_installer_scenario: satellite
+        satellite_installer_options:
+        - "--foreman-proxy-bmc 'true'"
+        - "--foreman-proxy-bmc-default-provider 'freeipmi'"
+        organization: "{{ organization }}"
+      when: "configure_provisioning == true"
+      ignore_errors: true
+
+    - name: Run the installer for provisioning - DNS/DHCP
+      include_role:
+        name: redhat.satellite_operations.installer
+      vars:
+        satellite_installer_scenario: satellite
+        satellite_installer_options:
         - '--foreman-proxy-dns true'
         - '--foreman-proxy-dns-managed true'
         - "{{ foreman_proxy_dns_forwarders }}"
-        - '--foreman-proxy-dns-interface eth0'
+        - "{{ foreman_proxy_dns_interface }}"
         - '--foreman-proxy-dns-zone local'
         - '--foreman-proxy-dns-server 127.0.0.1'
         - "{{ foreman_proxy_dns_reverse }}"
         - '--foreman-proxy-dhcp true'
         - '--foreman-proxy-dhcp-managed true'
-        - '--foreman-proxy-dhcp-interface eth0'
+        - "{{ foreman_proxy_dhcp_interface }}"
         - "{{ foreman_proxy_dhcp_range }}"
         - "{{ foreman_proxy_dhcp_gateway }}"
         - "{{ foreman_proxy_dhcp_nameservers }}"
         - '--foreman-proxy-tftp true'
         - '--foreman-proxy-tftp-managed true'
         - "{{ foreman_proxy_tftp_servername }}"
-        - "--foreman-proxy-http true"
-        - "--foreman-proxy-httpboot true"
-        - "--foreman-proxy-bmc 'true'"
-        - "--foreman-proxy-bmc-default-provider 'freeipmi'"
         organization: "{{ organization }}"
       when: "configure_provisioning == true"
+      ignore_errors: true
 
+    - name: Run the installer for provisioning httpboot
+      include_role:
+        name: redhat.satellite_operations.installer
+      vars:
+        satellite_installer_scenario: satellite
+        satellite_installer_options:
+        - "--foreman-proxy-http true"
+        - "--foreman-proxy-httpboot true"
+        organization: "{{ organization }}"
+      when: "configure_provisioning == true"
+      ignore_errors: true
 
     - name: "Upload the RHEL manifest"
       redhat.satellite.subscription_manifest:
@@ -69,10 +104,6 @@
         organization: "{{ organization }}"
         state: present
         manifest_path: "/tmp/manifest.zip"
-      ignore_errors: yes
-
 
     - name: "Refresh manifest"
-      ansible.builtin.command: hammer subscription refresh-manifest --organization "{{ organization }}"
-
-      
+      ansible.builtin.command: /bin/hammer subscription refresh-manifest --organization "{{ organization }}"
