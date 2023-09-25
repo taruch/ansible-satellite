@@ -6,8 +6,8 @@
   tasks:
   - name: "Create a host"
     redhat.satellite.host:
-      username: "{{ ansible_user }}"
-      password: "{{ ansible_password }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
       server_url: "https://satellite.entrenchedrealist.com"
       name: "{{ host_name | default(omit) }}"
       hostgroup: "{{ host_group | default('RHEL8') }}"
