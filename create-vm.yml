@@ -3,13 +3,24 @@
   hosts: all
   gather_facts: false
 
+  environment:
+    SATELLITE_SERVER_URL: "https://satellite.entrenchedrealist.com"
+    SATELLITE_USERNAME: "{{ username }}"
+    SATELLITE_PASSWORD: "{{ password }}"
+
   tasks:
+
   - name: "Create a host"
     redhat.satellite.host:
-      username: "{{ username }}"
-      password: "{{ password }}"
-      server_url: "https://satellite.entrenchedrealist.com"
+      validate_certs: false
       name: "{{ host_name | default(omit) }}"
+      organization: "Default Organization"
+      location: "Default Location"
       hostgroup: "{{ host_group | default('RHEL8') }}"
+      build: true
+      activation_keys: 'RHEL8'
+      #pxe_loader: 'PXELinux BIOS'
+      compute_attributes:
+        start: "1"
       state: present
 
