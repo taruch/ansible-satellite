@@ -1,0 +1,37 @@
+{
+ "collection_info": {
+  "namespace": "redhat",
+  "name": "satellite_operations",
+  "version": "0.3.2",
+  "authors": [
+   "Eric D. Helms <ericdhelms@gmail.com>",
+   "Evgeni Golov <evgeni@golov.de>",
+   "Matthias Dellweg <2500@gmx.de>",
+   "willtome <willtome@gmail.com>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "foreman",
+   "katello",
+   "satellite"
+  ],
+  "description": "Satellite operations tasks such as install, upgrade and maintenance",
+  "license": [
+   "GPL-3.0-or-later"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/RedHatSatellite/satellite-operations-collection",
+  "documentation": "https://access.redhat.com/documentation/en-us/red_hat_satellite/",
+  "homepage": "https://access.redhat.com/products/red-hat-satellite",
+  "issues": "https://bugzilla.redhat.com"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "d87624e8f78016e9f2958f18c23ccefc68878e1b4224db90764f1ee627e599cb",
+  "format": 1
+ },
+ "format": 1
+}

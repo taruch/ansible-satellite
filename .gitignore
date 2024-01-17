@@ -1,0 +1,5 @@
+*-artifact*.json
+ansible-navigator.yml
+*.bak
+*.swp
+*.log

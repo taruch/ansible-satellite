@@ -1,0 +1,131 @@
+{
+ "files": [
+  {
+   "name": ".",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "LICENSE",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+   "format": 1
+  },
+  {
+   "name": "requirements.txt",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "9766e44080b988a2ddc161c56bdcdea3b78a440aab665eeb686d3bd617f30314",
+   "format": 1
+  },
+  {
+   "name": "CHANGELOG.rst",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "80c410168f74ebd07283434c8d0211e5e1640c2527c520667c8a289ae52ae008",
+   "format": 1
+  },
+  {
+   "name": "roles",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/capsule_certs_generate",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/capsule_certs_generate/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/capsule_certs_generate/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a333e6e43765f1305409a60344d2a5a95e6489574a6dc19c7b4befd852bd55e1",
+   "format": 1
+  },
+  {
+   "name": "roles/capsule_certs_generate/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/capsule_certs_generate/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "818abf3654d3b6b5eb54175e7c80045ba2b8fc9384146c914efd4de140993043",
+   "format": 1
+  },
+  {
+   "name": "roles/capsule_certs_generate/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "a83ddf0e40aa551ece6cf92794ef5eb6abbbb1dc01abbbb613bed1ad5106bae3",
+   "format": 1
+  },
+  {
+   "name": "roles/installer",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/installer/defaults",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/installer/defaults/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "616bdca095b8cc33e1c447349887f749d3ce3d37c304e6c3fbaa1baa16ea2946",
+   "format": 1
+  },
+  {
+   "name": "roles/installer/tasks",
+   "ftype": "dir",
+   "chksum_type": null,
+   "chksum_sha256": null,
+   "format": 1
+  },
+  {
+   "name": "roles/installer/tasks/main.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "5bd2fbbbd654903e40f25b02837cb42ec642207f67af81ebdfdcf26a531aa2b2",
+   "format": 1
+  },
+  {
+   "name": "roles/installer/README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "083dadc313f44d9abaf6da2214062e3da4a98e48cc3c52a269e6c4bd5fc7c3c6",
+   "format": 1
+  },
+  {
+   "name": "README.md",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "687f4bcca993c6ef2dea093469dea2cc1c1780b51fd23232e2b5b109a19ad2cb",
+   "format": 1
+  }
+ ],
+ "format": 1
+}
