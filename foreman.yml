@@ -1,20 +1,21 @@
 ---
-plugin: theforeman.foreman.foreman
-#plugin: redhat.satellite.foreman
+plugin: redhat.satellite.foreman
 
 validate_certs: False
-# url: https://satellite.entrenchedrealist.com
-# user: ansible_integration
-# password: PASSW0RD
+url: https://satellite.entrenchedrealist.com
+user: ansible_integration
+password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          37373132343435616463303438643733323861313062623434376635626638636565663732363863
+          3563633966373938313365323230313435353834643139360a373661336333313135373762636638
+          39363765616463323036333136363633346236633132316236306631373339623462386432316637
+          6130633433383236340a356535663732663633616561343130343466386666373032313536313032
+          6137
 
-url: "{{ url }}"
-user: "{{ user }}"
-password: "{{ password }}"
-
+use_extra_vars: true
 want_facts: true
 want_hostcollections: false
 want_params: true
-
 
 compose:
   ansible_host: foreman_ip
